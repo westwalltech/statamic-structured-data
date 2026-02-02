@@ -54,128 +54,136 @@
                         <div class="mt-4">
                             <h4 class="text-gray-600 mb-2">{{ __('Fields') }}</h4>
 
-                            <draggable v-model="schema.fields" @end="onEnd" :key="schemaIndex" handle=".drag-handle">
-                                <div v-for="(field, index) in schema.fields" :key="index" class="mb-2 border rounded bg-gray-50">
-                                    <div class="structured-data-schema-field-header px-2 py-2 flex justify-between items-center border-b rounded-t-lg cursor-drag drag-handle">
-                                        <button v-show="index > 0" @click="moveFieldUp(index, schema)" class="btn btn-secondary">↑ {{ __('Move Up') }}</button>
-                                        <button v-show="index < schema.fields.length - 1" @click="moveFieldDown(index, schema)" class="btn btn-secondary">{{ __('Move Down') }} ↓</button>
-                                    </div>
-                                    <div class="p-3">
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                            <div class="col-span-2">
-                                                <label class="text-gray-600 mb-1 block">{{ __('Key') }}</label>
-                                                <input
-                                                    type="text"
-                                                    v-model="field.key"
-                                                    class="input-text w-full"
-                                                    @input="validateKey(field)"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label class="text-gray-600 mb-1 block">{{ __('Type') }}</label>
-                                                <v-select
-                                                    v-model="field.type"
-                                                    :options="selectOptions"
-                                                    @input="(value) => { field.type = value.value; handleTypeChange(field); }"
-                                                />
-                                            </div>
+                            <draggable
+                                v-model="schema.fields"
+                                @end="onEnd"
+                                :key="schemaIndex"
+                                handle=".drag-handle"
+                                item-key="key"
+                            >
+                                <template #item="{ element: field, index }">
+                                    <div class="mb-2 border rounded bg-gray-50">
+                                        <div class="structured-data-schema-field-header px-2 py-2 flex justify-between items-center border-b rounded-t-lg cursor-drag drag-handle">
+                                            <button v-show="index > 0" @click="moveFieldUp(index, schema)" class="btn btn-secondary">↑ {{ __('Move Up') }}</button>
+                                            <button v-show="index < schema.fields.length - 1" @click="moveFieldDown(index, schema)" class="btn btn-secondary">{{ __('Move Down') }} ↓</button>
                                         </div>
-
-                                        <div class="mt-3">
-                                            <input
-                                                v-if="field.type === 'string'"
-                                                type="text"
-                                                v-model="field.value"
-                                                class="input-text w-full"
-                                                :placeholder="'Enter value'"
-                                            />
-
-                                            <input
-                                                v-if="field.type === 'numeric'"
-                                                type="number"
-                                                v-model="field.value"
-                                                class="input-text w-full"
-                                                :placeholder="'Enter value'"
-                                            />
-
-                                            <div v-else-if="field.type === 'array'" class="mt-2">
-                                                <div class="flex flex-col gap-2 space-y-2">
-                                                    <div v-for="(value, valueIndex) in field.values" :key="valueIndex" class="flex items-center gap-2">
-                                                        <input
-                                                            type="text"
-                                                            v-model="field.values[valueIndex]"
-                                                            class="input-text flex-1"
-                                                        />
-                                                        <button
-                                                            @click="removeArrayValue(field, valueIndex)"
-                                                            class="btn-danger inline-flex items-center px-2 py-1"
-                                                        >
-                                                            <span>{{ __('Remove') }}</span>
-                                                        </button>
-                                                    </div>
+                                        <div class="p-3">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                                <div class="col-span-2">
+                                                    <label class="text-gray-600 mb-1 block">{{ __('Key') }}</label>
+                                                    <input
+                                                        type="text"
+                                                        v-model="field.key"
+                                                        class="input-text w-full"
+                                                        @input="validateKey(field)"
+                                                    />
                                                 </div>
-                                                <button
-                                                    @click="addArrayValue(field)"
-                                                    class="btn-primary mt-2 text-sm"
-                                                >
-                                                    {{ __('Add Value')}}
-                                                </button>
+
+                                                <div>
+                                                    <label class="text-gray-600 mb-1 block">{{ __('Type') }}</label>
+                                                    <v-select
+                                                        v-model="field.type"
+                                                        :options="selectOptions"
+                                                        @update:modelValue="(value) => { field.type = value.value; handleTypeChange(field); }"
+                                                    />
+                                                </div>
                                             </div>
 
-                                            <div v-else-if="field.type === 'object'" class="mt-2">
-                                                <structured-data-object 
-                                                    v-model="field.value" 
+                                            <div class="mt-3">
+                                                <input
+                                                    v-if="field.type === 'string'"
+                                                    type="text"
+                                                    v-model="field.value"
+                                                    class="input-text w-full"
+                                                    :placeholder="'Enter value'"
+                                                />
+
+                                                <input
+                                                    v-if="field.type === 'numeric'"
+                                                    type="number"
+                                                    v-model="field.value"
+                                                    class="input-text w-full"
+                                                    :placeholder="'Enter value'"
+                                                />
+
+                                                <div v-else-if="field.type === 'array'" class="mt-2">
+                                                    <div class="flex flex-col gap-2 space-y-2">
+                                                        <div v-for="(value, valueIndex) in field.values" :key="valueIndex" class="flex items-center gap-2">
+                                                            <input
+                                                                type="text"
+                                                                v-model="field.values[valueIndex]"
+                                                                class="input-text flex-1"
+                                                            />
+                                                            <button
+                                                                @click="removeArrayValue(field, valueIndex)"
+                                                                class="btn-danger inline-flex items-center px-2 py-1"
+                                                            >
+                                                                <span>{{ __('Remove') }}</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        @click="addArrayValue(field)"
+                                                        class="btn-primary mt-2 text-sm"
+                                                    >
+                                                        {{ __('Add Value')}}
+                                                    </button>
+                                                </div>
+
+                                                <div v-else-if="field.type === 'object'" class="mt-2">
+                                                    <structured-data-object
+                                                        v-model="field.value"
+                                                        :replicator-fields="replicatorFields"
+                                                    />
+                                                </div>
+
+                                                <div v-else-if="field.type === 'object_array'" class="mt-2">
+                                                    <div class="flex flex-col gap-2 space-y-2">
+                                                        <div v-for="(value, valueIndex) in field.values" :key="valueIndex" class="flex flex-col gap-2">
+                                                            <structured-data-object v-model="field.values[valueIndex]" />
+                                                            <button
+                                                                @click="removeArrayValue(field, valueIndex)"
+                                                                class="btn-danger inline-flex self-end items-center px-2 py-1"
+                                                            >
+                                                                <span>{{ __('Remove') }}</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        @click="addArrayValue(field)"
+                                                        class="btn-primary mt-2 text-sm"
+                                                    >
+                                                        {{ __('Add Value')}}
+                                                    </button>
+                                                </div>
+
+                                                <div v-else-if="field.type === 'data_object'" class="mt-2">
+                                                     <v-select
+                                                        v-model="field.value"
+                                                        :options="taxonomyTermOptions"
+                                                        @update:modelValue="(value) => { field.value = value.value; }"
+                                                    />
+                                                </div>
+
+                                            <div v-else-if="field.type === 'replicator_object_array'" class="mt-2">
+                                                <replicator-field-mapper
+                                                    v-model="field.config"
                                                     :replicator-fields="replicatorFields"
                                                 />
                                             </div>
+                                            </div>
 
-                                            <div v-else-if="field.type === 'object_array'" class="mt-2">
-                                                <div class="flex flex-col gap-2 space-y-2">
-                                                    <div v-for="(value, valueIndex) in field.values" :key="valueIndex" class="flex flex-col gap-2">
-                                                        <structured-data-object v-model="field.values[valueIndex]" />
-                                                        <button
-                                                            @click="removeArrayValue(field, valueIndex)"
-                                                            class="btn-danger inline-flex self-end items-center px-2 py-1"
-                                                        >
-                                                            <span>{{ __('Remove') }}</span>
-                                                        </button>
-                                                    </div>
-                                                </div>
+                                            <div class="flex justify-end mt-3">
                                                 <button
-                                                    @click="addArrayValue(field)"
-                                                    class="btn-primary mt-2 text-sm"
+                                                    @click="removeField(schema, index)"
+                                                    class="btn-danger"
                                                 >
-                                                    {{ __('Add Value')}}
+                                                    {{ __('Remove Field') }}
                                                 </button>
                                             </div>
-
-                                            <div v-else-if="field.type === 'data_object'" class="mt-2">
-                                                 <v-select
-                                                    v-model="field.value"
-                                                    :options="taxonomyTermOptions"
-                                                    @input="(value) => { field.value = value.value; }"
-                                                />
-                                            </div>
-
-                                        <div v-else-if="field.type === 'replicator_object_array'" class="mt-2">
-                                            <replicator-field-mapper 
-                                                v-model="field.config" 
-                                                :replicator-fields="replicatorFields"
-                                            />
-                                        </div>
-                                        </div>
-
-                                        <div class="flex justify-end mt-3">
-                                            <button
-                                                @click="removeField(schema, index)"
-                                                class="btn-danger"
-                                            >
-                                                {{ __('Remove Field') }}
-                                            </button>
                                         </div>
                                     </div>
-                                </div>
+                                </template>
                             </draggable>
 
                             <button @click="addField(schema)" class="btn-primary mt-2">
@@ -188,9 +196,9 @@
 
             <div class="flex gap-2 mt-4">
                 <button class="btn-primary" @click="addSchema">{{ __('Add Schema') }}</button>
-                <button 
-                    v-if="presetsEnabled && presets.length > 0" 
-                    class="btn-preset" 
+                <button
+                    v-if="presetsEnabled && presets.length > 0"
+                    class="btn-preset"
                     @click="showPresetModal = true"
                 >
                     {{ __('Add Preset') }}
@@ -233,8 +241,10 @@ export default {
         draggable,
     },
 
+    emits: ['update:modelValue'],
+
     props: {
-        value: {
+        modelValue: {
             type: Array,
             default: () => [{
                 specialProps: {
@@ -257,7 +267,7 @@ export default {
 
     data() {
         return {
-            schemas: this.value.length ? this.value : [{
+            schemas: this.modelValue.length ? this.modelValue : [{
                 specialProps: {
                     context: 'http://schema.org',
                     type: '',
@@ -272,7 +282,7 @@ export default {
     },
 
     computed: {
-        baseUrl() {
+        computedBaseUrl() {
             return this.config?.base_url || '';
         },
 
@@ -321,7 +331,7 @@ export default {
         schemas: {
             deep: true,
             handler(val) {
-                this.$emit('input', val);
+                this.$emit('update:modelValue', val);
             }
         }
     },
@@ -441,7 +451,7 @@ export default {
         },
 
         toggleSchema(index) {
-            this.$set(this.collapsedSchemas, index, !this.collapsedSchemas[index]);
+            this.collapsedSchemas[index] = !this.collapsedSchemas[index];
         },
 
         isSchemaCollapsed(index) {
@@ -454,7 +464,7 @@ export default {
 
         handlePresetSelected(data) {
             const { preset, action } = data;
-            
+
             switch (action) {
                 case 'merge':
                 case 'add':

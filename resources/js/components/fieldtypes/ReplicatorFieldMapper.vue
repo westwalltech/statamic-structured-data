@@ -6,7 +6,7 @@
                 <v-select
                     v-model="localConfig.replicator_field"
                     :options="replicatorFieldOptions"
-                    @input="(val) => { localConfig.replicator_field = val ? val.value : ''; localConfig.set = ''; }"
+                    @update:modelValue="(val) => { localConfig.replicator_field = val ? val.value : ''; localConfig.set = ''; }"
                     :placeholder="replicatorFieldOptions.length > 0 ? __('Select replicator field') : __('No replicator fields available')"
                     :disabled="replicatorFieldOptions.length === 0"
                 />
@@ -20,7 +20,7 @@
                 <v-select
                     v-model="localConfig.set"
                     :options="setOptions"
-                    @input="(val) => { localConfig.set = val ? val.value : ''; }"
+                    @update:modelValue="(val) => { localConfig.set = val ? val.value : ''; }"
                     :placeholder="__('All sets')"
                     :clearable="true"
                 />
@@ -58,7 +58,7 @@
                         <v-select
                             v-model="mapping.mode"
                             :options="modeOptions"
-                            @input="(val) => { mapping.mode = val.value; }"
+                            @update:modelValue="(val) => { mapping.mode = val.value; }"
                         />
                     </div>
                     <button class="btn-danger mt-6" @click="removeMapping(index)">{{ __('Remove') }}</button>
@@ -80,7 +80,7 @@
                         <v-select
                             v-model="mapping.field"
                             :options="getFieldOptionsForMapping(mapping)"
-                            @input="(val) => { mapping.field = val ? val.value : ''; }"
+                            @update:modelValue="(val) => { mapping.field = val ? val.value : ''; }"
                             :placeholder="__('Select field')"
                         />
                     </template>
@@ -102,8 +102,11 @@
 <script>
 export default {
     name: 'ReplicatorFieldMapper',
+
+    emits: ['update:modelValue'],
+
     props: {
-        value: {
+        modelValue: {
             type: Object,
             default: () => ({
                 replicator_field: '',
@@ -118,7 +121,7 @@ export default {
     },
     data() {
         return {
-            localConfig: this.normalizeConfig(this.value),
+            localConfig: this.normalizeConfig(this.modelValue),
             modeOptions: [
                 { value: 'field', label: 'From Replicator Field' },
                 { value: 'static', label: 'Static Value' },
@@ -165,14 +168,14 @@ export default {
             deep: true,
             handler(val) {
                 const newVal = JSON.stringify(val);
-                const oldVal = JSON.stringify(this.value);
+                const oldVal = JSON.stringify(this.modelValue);
 
                 if (newVal !== oldVal) {
-                    this.$emit('input', JSON.parse(newVal));
+                    this.$emit('update:modelValue', JSON.parse(newVal));
                 }
             }
         },
-        value: {
+        modelValue: {
             deep: true,
             handler(val) {
                 const newVal = JSON.stringify(this.normalizeConfig(val));
@@ -258,4 +261,3 @@ export default {
     }
 }
 </script>
-

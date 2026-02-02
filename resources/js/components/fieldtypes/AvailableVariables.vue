@@ -84,7 +84,7 @@ export default {
         },
 
         toggleChildren(variableName) {
-            this.$set(this.showChildren, variableName, !this.showChildren[variableName]);
+            this.showChildren[variableName] = !this.showChildren[variableName];
         },
 
         copyVariable(variable, event) {

@@ -38,7 +38,7 @@
                         <v-select
                             v-model="field.type"
                             :options="selectOptions"
-                            @input="(value) => { field.type = value.value; handleTypeChange(field); }"
+                            @update:modelValue="(value) => { field.type = value.value; handleTypeChange(field); }"
                         />
                     </div>
 
@@ -73,8 +73,8 @@
                     </div>
 
                     <div v-else-if="field.type === 'replicator_object_array'" class="mt-2">
-                        <replicator-field-mapper 
-                            v-model="field.config" 
+                        <replicator-field-mapper
+                            v-model="field.config"
                             :replicator-fields="replicatorFields"
                         />
                     </div>
@@ -95,8 +95,10 @@ export default {
         'replicator-field-mapper': ReplicatorFieldMapper,
     },
 
+    emits: ['update:modelValue'],
+
     props: {
-        value: {
+        modelValue: {
             type: Object,
             default: () => ({
                 specialProps: {
@@ -122,7 +124,7 @@ export default {
 
     data() {
         return {
-            objectData: JSON.parse(JSON.stringify(this.value))
+            objectData: JSON.parse(JSON.stringify(this.modelValue))
         }
     },
 
@@ -151,9 +153,9 @@ export default {
             deep: true,
             handler(val) {
                 const newVal = JSON.stringify(val);
-                const oldVal = JSON.stringify(this.value);
+                const oldVal = JSON.stringify(this.modelValue);
                 if (newVal !== oldVal) {
-                    this.$emit('input', JSON.parse(JSON.stringify(val)));
+                    this.$emit('update:modelValue', JSON.parse(JSON.stringify(val)));
                 }
             }
         },
@@ -164,7 +166,7 @@ export default {
             }
         },
 
-        value: {
+        modelValue: {
             deep: true,
             handler(val) {
                 const newVal = JSON.stringify(val);
@@ -213,13 +215,13 @@ export default {
 
         handleTypeChange(field) {
             if (field.type === 'object') {
-                this.$set(field, 'value', {
+                field.value = {
                     specialProps: {
                         type: '',
                         id: ''
                     },
                     fields: []
-                });
+                };
             } else if (field.type === 'array') {
                 field.values = [];
             } else if (field.type === 'replicator_object_array') {
