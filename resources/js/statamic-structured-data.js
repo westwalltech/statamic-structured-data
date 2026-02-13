@@ -4,8 +4,15 @@ import StructuredDataObjectBuilder from './components/fieldtypes/StructuredDataO
 import AvailableVariables from './components/fieldtypes/AvailableVariables.vue';
 
 Statamic.booting(() => {
-    Statamic.component('structured_data_builder-fieldtype', StructuredDataBuilder);
-    Statamic.component('structured_data_preview-fieldtype', StructuredDataPreview);
-    Statamic.component('structured_data_object_builder-fieldtype', StructuredDataObjectBuilder);
-    Statamic.component('structured_data_available_variables-fieldtype', AvailableVariables);
+    // Inject Fieldtype mixin at registration time (not at module load time)
+    // because the Fieldtype global isn't available until Statamic's CP JS loads
+    const withFieldtype = (component) => ({
+        ...component,
+        mixins: [Fieldtype, ...(component.mixins || []).filter(m => m !== Fieldtype)],
+    });
+
+    Statamic.component('structured_data_builder-fieldtype', withFieldtype(StructuredDataBuilder));
+    Statamic.component('structured_data_preview-fieldtype', withFieldtype(StructuredDataPreview));
+    Statamic.component('structured_data_object_builder-fieldtype', withFieldtype(StructuredDataObjectBuilder));
+    Statamic.component('structured_data_available_variables-fieldtype', withFieldtype(AvailableVariables));
 });

@@ -121,7 +121,6 @@ import { formatSchemaJson } from '../../utils/schema';
 
 export default {
     name: 'StructuredDataObjectBuilder',
-    mixins: [Fieldtype],
 
     components: {
         'structured-data-object': StructuredDataObject,

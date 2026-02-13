@@ -232,7 +232,6 @@ import draggable from 'vuedraggable';
 
 export default {
     name: 'StructuredDataBuilder',
-    mixins: [Fieldtype],
 
     components: {
         'structured-data-object': StructuredDataObject,

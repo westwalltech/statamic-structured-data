@@ -51,8 +51,6 @@
 import { formatSchemaJson } from '../../utils/schema';
 
 export default {
-    mixins: [Fieldtype],
-
     data() {
         return {
             selectedTemplates: [],
