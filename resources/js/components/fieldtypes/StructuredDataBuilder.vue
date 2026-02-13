@@ -240,33 +240,9 @@ export default {
         draggable,
     },
 
-    emits: ['update:modelValue'],
-
-    props: {
-        modelValue: {
-            type: Array,
-            default: () => [{
-                specialProps: {
-                    context: 'http://schema.org',
-                    type: '',
-                    id: ''
-                },
-                fields: []
-            }]
-        },
-        baseUrl: {
-            type: String,
-            default: ''
-        },
-        meta: {
-            type: Object,
-            default: () => ({})
-        }
-    },
-
     data() {
         return {
-            schemas: this.modelValue.length ? this.modelValue : [{
+            schemas: (this.value && this.value.length) ? this.value : [{
                 specialProps: {
                     context: 'http://schema.org',
                     type: '',
@@ -330,7 +306,7 @@ export default {
         schemas: {
             deep: true,
             handler(val) {
-                this.$emit('update:modelValue', val);
+                this.update(val);
             }
         }
     },

@@ -110,7 +110,7 @@ export default {
         },
         baseUrl: {
             type: String,
-            required: true
+            default: ''
         },
         parentType: {
             type: String,

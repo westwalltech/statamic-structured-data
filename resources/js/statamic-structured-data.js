@@ -4,11 +4,12 @@ import StructuredDataObjectBuilder from './components/fieldtypes/StructuredDataO
 import AvailableVariables from './components/fieldtypes/AvailableVariables.vue';
 
 Statamic.booting(() => {
-    // Inject Fieldtype mixin at registration time (not at module load time)
-    // because the Fieldtype global isn't available until Statamic's CP JS loads.
-    // Mutate directly rather than spreading to preserve Vue 3 SFC internals.
+    // In Statamic 6, Fieldtype is not a global. It's provided via the @statamic/cms
+    // package at window.__STATAMIC__.core.FieldtypeMixin (Options API mixin).
+    const FieldtypeMixin = window.__STATAMIC__.core.FieldtypeMixin;
+
     [StructuredDataBuilder, StructuredDataPreview, StructuredDataObjectBuilder, AvailableVariables].forEach(component => {
-        component.mixins = [Fieldtype, ...(component.mixins || [])];
+        component.mixins = [FieldtypeMixin, ...(component.mixins || [])];
     });
 
     Statamic.component('structured_data_builder-fieldtype', StructuredDataBuilder);

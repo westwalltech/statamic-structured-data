@@ -72,7 +72,7 @@
                                     <div v-else-if="field.type === 'object'" class="mt-2">
                                         <structured-data-object
                                             v-model="field.value"
-                                            :base-url="baseUrl"
+                                            :base-url="computedBaseUrl"
                                             :field-key="field.key"
                                             :replicator-fields="replicatorFields"
                                         />
@@ -127,24 +127,9 @@ export default {
         'replicator-field-mapper': ReplicatorFieldMapper
     },
 
-    emits: ['update:modelValue'],
-
-    props: {
-        modelValue: {
-            type: Object,
-            default: () => ({
-                fields: []
-            })
-        },
-        meta: {
-            type: Object,
-            default: () => ({})
-        }
-    },
-
     data() {
         return {
-            schema: this.modelValue || {
+            schema: this.value || {
                 fields: []
             },
             showPreview: false,
@@ -179,7 +164,7 @@ export default {
         schema: {
             deep: true,
             handler(val) {
-                this.$emit('update:modelValue', val);
+                this.update(val);
             }
         }
     },
