@@ -27,7 +27,7 @@
                                         <v-select
                                             v-model="field.type"
                                             :options="selectOptions"
-                                            @input="(value) => { field.type = value.value; handleTypeChange(field); }"
+                                            @update:modelValue="(value) => { field.type = value.value; handleTypeChange(field); }"
                                         />
                                     </div>
                                 </div>
@@ -78,8 +78,8 @@
                                         />
                                     </div>
                                     <div v-else-if="field.type === 'replicator_object_array'" class="mt-2">
-                                        <replicator-field-mapper 
-                                            v-model="field.config" 
+                                        <replicator-field-mapper
+                                            v-model="field.config"
                                             :replicator-fields="replicatorFields"
                                         />
                                     </div>
@@ -128,16 +128,14 @@ export default {
         'replicator-field-mapper': ReplicatorFieldMapper
     },
 
+    emits: ['update:modelValue'],
+
     props: {
-        value: {
+        modelValue: {
             type: Object,
             default: () => ({
                 fields: []
             })
-        },
-        baseUrl: {
-            type: String,
-            default: ''
         },
         meta: {
             type: Object,
@@ -147,7 +145,7 @@ export default {
 
     data() {
         return {
-            schema: this.value || {
+            schema: this.modelValue || {
                 fields: []
             },
             showPreview: false,
@@ -156,7 +154,7 @@ export default {
     },
 
     computed: {
-        baseUrl() {
+        computedBaseUrl() {
             return this.config?.base_url || '';
         },
 
@@ -182,7 +180,7 @@ export default {
         schema: {
             deep: true,
             handler(val) {
-                this.$emit('input', val);
+                this.$emit('update:modelValue', val);
             }
         }
     },

@@ -126,6 +126,8 @@
 export default {
     name: 'PresetModal',
 
+    emits: ['close', 'preset-selected'],
+
     props: {
         visible: {
             type: Boolean,
@@ -161,7 +163,7 @@ export default {
         }
     },
 
-    beforeDestroy() {
+    beforeUnmount() {
         this.unlockBodyScroll();
     },
 
