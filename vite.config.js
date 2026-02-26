@@ -13,14 +13,4 @@ export default defineConfig({
         }),
         vue(),
     ],
-    build: {
-        rollupOptions: {
-            external: ['vue', 'vuedraggable'],
-            output: {
-                globals: {
-                    vue: 'Vue',
-                },
-            },
-        },
-    },
 });
