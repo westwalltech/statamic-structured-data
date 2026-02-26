@@ -67,11 +67,15 @@ export default {
         },
 
         templateIds() {
-            return this.$store.state.publish.base.values?.structured_data_templates || [];
+            return this.publishContainer?.values?.structured_data_templates || [];
         },
 
         currentEntryId() {
-            return this.$store.state.publish.base.values.id;
+            const reference = this.publishContainer?.reference;
+            if (reference && reference.includes('::')) {
+                return reference.split('::')[1];
+            }
+            return this.publishContainer?.values?.id;
         }
     },
 
@@ -125,11 +129,22 @@ export default {
     max-height: 400px;
 }
 
-.btn {
-    @apply bg-gray-200 px-3 py-1 rounded hover:bg-gray-300;
+.structured-data-preview .btn {
+    background-color: #e5e7eb;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
 }
 
-.btn-close {
-    @apply px-2 py-1 text-gray-500 hover:text-gray-700;
+.structured-data-preview .btn:hover {
+    background-color: #d1d5db;
+}
+
+.structured-data-preview .btn-close {
+    padding: 0.25rem 0.5rem;
+    color: #6b7280;
+}
+
+.structured-data-preview .btn-close:hover {
+    color: #374151;
 }
 </style>

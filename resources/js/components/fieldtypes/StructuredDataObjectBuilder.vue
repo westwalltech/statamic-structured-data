@@ -233,12 +233,26 @@ export default {
 .structured-data-builder {
     max-width: 800px;
 }
-.btn-close {
-    @apply px-2 py-1 text-gray-500 hover:text-gray-700;
+
+.structured-data-builder .btn-close {
+    padding: 0.25rem 0.5rem;
+    color: #6b7280;
 }
-.btn {
-    @apply bg-gray-200 px-3 py-1 rounded hover:bg-gray-300;
+
+.structured-data-builder .btn-close:hover {
+    color: #374151;
 }
+
+.structured-data-builder .btn {
+    background-color: #e5e7eb;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.structured-data-builder .btn:hover {
+    background-color: #d1d5db;
+}
+
 .chevron {
     width: 10px;
     height: 10px;
@@ -247,6 +261,7 @@ export default {
     transform: rotate(45deg);
     transition: transform 0.2s ease;
 }
+
 .chevron-up {
     transform: rotate(-135deg);
 }

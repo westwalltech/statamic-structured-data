@@ -244,11 +244,22 @@ export default {
     max-width: 800px;
 }
 
-.btn-close {
-    @apply px-2 py-1 text-gray-500 hover:text-gray-700;
+.structured-data-object .btn-close {
+    padding: 0.25rem 0.5rem;
+    color: #6b7280;
 }
 
-.btn {
-    @apply bg-gray-200 px-3 py-1 rounded hover:bg-gray-300;
+.structured-data-object .btn-close:hover {
+    color: #374151;
+}
+
+.structured-data-object .btn {
+    background-color: #e5e7eb;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.structured-data-object .btn:hover {
+    background-color: #d1d5db;
 }
 </style>
